@@ -1,0 +1,11 @@
+version: "dev"
+services:
+  navilearn_dev:
+    build: 
+      context: .
+      dockerfile: dockerfile.dev
+    volumes:
+      - ./src:/app
+    ports:
+       - "8501:8501"
+    tty : true
