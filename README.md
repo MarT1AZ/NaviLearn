@@ -41,7 +41,7 @@ Query : "Find a crash course for REST APIs under 2 hours"
 
 <img width="490" height="852" alt="image" src="https://github.com/user-attachments/assets/393cdcc2-2c2e-4356-add5-f2c5d8bfb3b7" />
 
-Query : "Find a crash course for REST APIs under 2 hours"
+Query : "got any backend playlist for complete idiots"
 
 <img width="501" height="745" alt="image" src="https://github.com/user-attachments/assets/ebfc26b0-91fd-4d0b-9766-fc267e1bf679" />
 
