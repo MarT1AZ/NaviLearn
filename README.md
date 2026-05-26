@@ -47,6 +47,7 @@ Query : "got any backend playlist for complete idiots"
 
 <img width="488" height="356" alt="image" src="https://github.com/user-attachments/assets/49837947-3ff8-4428-b37d-e2a7a84460e9" />
 
+<img width="488" height="82" alt="image" src="https://github.com/user-attachments/assets/5eb47771-35ac-4e77-beb3-ff7947b9a820" />
 
 
 ## Future work
