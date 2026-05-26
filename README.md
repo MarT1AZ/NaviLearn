@@ -56,9 +56,9 @@ What i am aimming to do right now
 - Interactive feedback system to refine recommendations through conversation
 - Automatic re-search when users reject recommended content
 - Optimizing token consumption for playlist analysis and recommendation
+- Personalized learning planner
 
 What is in my mind right now
-- Personalized learning planner
 - Project-based learning roadmap generator
 
 
