@@ -5,7 +5,6 @@ services:
       context: .
       dockerfile: dockerfile.dev
     volumes:
-      - ./src:/app
+      - ./src:/app/src
     ports:
        - "8501:8501"
-    tty : true

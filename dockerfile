@@ -8,8 +8,6 @@ RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificat
 
 RUN pip install --upgrade -r requirements.txt
 
-COPY src/recommendation_ui.py .
-COPY src/llm_recommendation.py .
-COPY src/youtube_search_tools.py .
+COPY src/ ./src/
 
-CMD ["streamlit","run","recommendation_ui.py","--server.port=8501","--server.address=0.0.0.0"]
+CMD ["streamlit","run","src/recommendation_ui.py","--server.port=8501","--server.address=0.0.0.0"]

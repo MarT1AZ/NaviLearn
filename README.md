@@ -18,11 +18,14 @@ The system understands natural language queries and automatically retrieves rele
 The app can be install using docker and locally deployed
 
 1. Clone the project
+1. Create a `.ENV` file in `src/` by following `src/.ENV.example`
 2. Locally deploy (user mode)
 - Local deployment
    `docker compose up`
 - Development deployment
    `docker compose -f docker-compose.dev.yml up`
+   Stop dev with `docker compose -f docker-compose.dev.yml down`
+   Stop prod with `docker compose down`
 3. ENV file setup
 
 Inside The .ENV.example file put your API key
@@ -35,8 +38,6 @@ CACHE_STORE_DIR = "src/cache_store"
 The app stores cached search results in `src/cache_store/search_cache.json` and logs in `src/system_log/`.
 
 Once installation & setup are completed, you can view the app on `http://localhost:8501`
-
-Finally you can close / remove container using `docker compose down`
 
 ## Demo screenshot
 
