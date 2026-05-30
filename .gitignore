@@ -3,5 +3,7 @@
 run.txt
 __pycache__
 system_log/
+src/system_log/
+src/cache_store/
 .ENV
 test.py

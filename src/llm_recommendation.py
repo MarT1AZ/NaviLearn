@@ -1,11 +1,13 @@
 # from langchain.llms import OpenAI
 import asyncio
 import logging
+import os
+import re
+from pathlib import Path
 from pydantic import BaseModel
 from agents import Agent, Runner, function_tool
 from dotenv import load_dotenv
 from datetime import datetime
-import os
 from youtube_search_tools import (
     fetch_comment_with_video_id,
     fetch_playlist_meta_data,
@@ -53,6 +55,16 @@ class ContentRecommendationList(BaseModel):
 @function_tool
 def get_current_date():
     return datetime.now().strftime("year %Y month %m day %d")
+
+
+def _resolve_log_dir() -> Path:
+    env_path = os.getenv("SAVE_LOG_PATH")
+    if env_path:
+        log_dir = Path(env_path)
+        if not log_dir.is_absolute():
+            log_dir = Path(__file__).resolve().parent / log_dir
+        return log_dir
+    return Path(__file__).resolve().parent / "system_log"
 
 
 video_info_processor_agent = Agent(name = "video_info_processor_agent",
@@ -147,7 +159,7 @@ You should recommend those prerequisites and state why
 
 1. search_revelant_video_or_playlist_ids_on_youtube
 
-This tool allow you to fetch up to 5 video/playlist ids revelants to the query which you will have to send this to the agent
+This tool allow you to fetch up to 2 video/playlist ids revelants to the query which you will have to send this to the agent
 note 1 : try to use different queries if possible to avoid getting the same video
 ืnote 2 : please try to provide for both video and playlist (only search up for 2 times for both type so it would not exhaust my API limit)
 
@@ -199,14 +211,14 @@ async def run_recommendation(query: str,cacheDictContext) -> tuple[ContentRecomm
     Run the orchestration agent for a given query.
     Returns (ContentRecommendationList, total_tokens_used).
     """
-    log_path = os.getenv("SAVE_LOG_PATH", ".")
-    os.makedirs(log_path, exist_ok=True)
-    query_truncated = query[:40]
+    log_path = _resolve_log_dir()
+    log_path.mkdir(parents=True, exist_ok=True)
+    query_truncated = re.sub(r"[^A-Za-z0-9._-]+", "_", query[:40]).strip("_") or "query"
 
  
     logging.basicConfig(
         level=logging.INFO,
-        filename=os.path.join(log_path, f"QUERY_{query_truncated}.log"),
+        filename=str(log_path / f"QUERY_{query_truncated}.log"),
         filemode="w",
         format="%(name)s - %(levelname)s - %(message)s",
     )

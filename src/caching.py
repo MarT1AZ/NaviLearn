@@ -1,12 +1,64 @@
 
+import json
+import os
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+
 import isodate
-from dataclasses import dataclass, field
+
+
+def _resolve_cache_file_path() -> Path:
+    cache_dir_setting = os.getenv("CACHE_STORE_DIR", "src/cache_store")
+    cache_dir = Path(cache_dir_setting)
+    if not cache_dir.is_absolute():
+        cache_dir = Path(__file__).resolve().parent.parent / cache_dir
+    return cache_dir / "search_cache.json"
+
+
+CACHE_FILE_PATH = _resolve_cache_file_path()
 
 
 @dataclass
 class SearchItemCacheDictContext:
     videoItemDict: dict = field(default_factory=dict)
     playlistItemDict: dict = field(default_factory=dict)
+
+    def to_dict(self):
+        return {
+            "videoItemDict": {
+                video_id: video_item.to_dict()
+                for video_id, video_item in self.videoItemDict.items()
+            },
+            "playlistItemDict": {
+                playlist_id: playlist_item.to_dict()
+                for playlist_id, playlist_item in self.playlistItemDict.items()
+            },
+        }
+
+    def save_to_disk(self, cache_path: Path | None = None):
+        target_path = cache_path or CACHE_FILE_PATH
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        with target_path.open("w", encoding="utf-8") as file:
+            json.dump(self.to_dict(), file, indent=2, ensure_ascii=False)
+
+    @classmethod
+    def load_from_disk(cls, cache_path: Path | None = None):
+        target_path = cache_path or CACHE_FILE_PATH
+        if not target_path.exists():
+            return cls()
+
+        with target_path.open("r", encoding="utf-8") as file:
+            payload = json.load(file)
+
+        video_items = {
+            video_id: VideoInfoItem.from_cache_dict(video_payload)
+            for video_id, video_payload in payload.get("videoItemDict", {}).items()
+        }
+        playlist_items = {
+            playlist_id: PlaylistInfoItem.from_cache_dict(playlist_payload)
+            for playlist_id, playlist_payload in payload.get("playlistItemDict", {}).items()
+        }
+        return cls(videoItemDict=video_items, playlistItemDict=playlist_items)
 
 
 @dataclass
@@ -81,6 +133,13 @@ class VideoInfoItem:
             commentCount=int(video_statistics["commentCount"]),
         )
 
+    def to_dict(self):
+        return asdict(self)
+
+    @classmethod
+    def from_cache_dict(cls, payload):
+        return cls(**payload)
+
     def has_full_info(self) -> bool:
         return all(
             [
@@ -110,6 +169,13 @@ class PlaylistInfoItem:
 
     def has_video_ids(self) -> bool:
         return bool(self.video_ids)
+
+    def to_dict(self):
+        return asdict(self)
+
+    @classmethod
+    def from_cache_dict(cls, payload):
+        return cls(**payload)
 
 
 

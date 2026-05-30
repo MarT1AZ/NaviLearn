@@ -147,7 +147,7 @@ query = st.text_area(
  
 submit = st.button("Find recommendations ↗")
 if "cacheDictContext" not in st.session_state:
-    st.session_state.cacheDictContext = SearchItemCacheDictContext()
+    st.session_state.cacheDictContext = SearchItemCacheDictContext.load_from_disk()
 cacheDictContext = st.session_state.cacheDictContext
  
 if submit:

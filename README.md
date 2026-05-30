@@ -29,8 +29,11 @@ Inside The .ENV.example file put your API key
 ```
 OPENAI_API_KEY="your key here"
 YOUTUBE_API_KEY="your key here"
-SAVE_LOG_PATH = "system_log"
+SAVE_LOG_PATH = "src/system_log"
+CACHE_STORE_DIR = "src/cache_store"
 ```
+The app stores cached search results in `src/cache_store/search_cache.json` and logs in `src/system_log/`.
+
 Once installation & setup are completed, you can view the app on `http://localhost:8501`
 
 Finally you can close / remove container using `docker compose down`

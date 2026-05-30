@@ -48,7 +48,7 @@ def search_revelant_video_or_playlist_ids_on_youtube(query: str):
         "part": "id",
         "q": query,
         "type": "video,playlist",
-        "maxResults": 5,
+        "maxResults": 2,
         "key": os.getenv("YOUTUBE_API_KEY"),
     }
 
@@ -134,6 +134,8 @@ def fetch_video_information(ctx: RunContextWrapper[SearchItemCacheDictContext], 
     video_item = VideoInfoItem.from_json(items[0])
     if video_cache is not None:
         video_cache[video_id] = video_item
+        if cache_context is not None and hasattr(cache_context, "save_to_disk"):
+            cache_context.save_to_disk()
 
     logging.info(f"[TOOL-{tool_name}]: video details fetched successfully for video_id=%s", video_id)
     body = "Fetched video details:\n" + json.dumps(video_item.__dict__, indent=2)
@@ -242,6 +244,8 @@ def fetch_video_id_from_a_playlist(ctx: RunContextWrapper[SearchItemCacheDictCon
             playlist_item = PlaylistInfoItem(playlist_id=playlist_id)
             playlist_cache[playlist_id] = playlist_item
         playlist_item.video_ids = video_ids
+        if cache_context is not None and hasattr(cache_context, "save_to_disk"):
+            cache_context.save_to_disk()
 
     body = "\n".join(f"{i + 1}. video id : {video_id}" for i, video_id in enumerate(video_ids))
     return _return_success(tool_name, body)
@@ -315,6 +319,8 @@ def fetch_playlist_meta_data(ctx: RunContextWrapper[SearchItemCacheDictContext],
                 existing_item.description = playlist_item.description
         else:
             playlist_cache[playlist_id] = playlist_item
+        if cache_context is not None and hasattr(cache_context, "save_to_disk"):
+            cache_context.save_to_disk()
 
     logging.info(f"[TOOL-{tool_name}]: metadata fetched successfully for playlist_id=%s", playlist_id)
     body = (
