@@ -1,6 +1,7 @@
 import asyncio
 import streamlit as st
 from llm_recommendation import run_recommendation, ContentRecommendationList
+from caching import SearchItemCacheDictContext
  
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -145,11 +146,14 @@ query = st.text_area(
 )
  
 submit = st.button("Find recommendations ↗")
+if "cacheDictContext" not in st.session_state:
+    st.session_state.cacheDictContext = SearchItemCacheDictContext()
+cacheDictContext = st.session_state.cacheDictContext
  
 if submit:
     if not query.strip():
         st.warning("Please enter a query first.")
     else:
         with st.spinner("Searching YouTube and analysing content… this may take a minute."):
-            result, tokens = asyncio.run(run_recommendation(query))
+            result, tokens = asyncio.run(run_recommendation(query, cacheDictContext))
         render_results(result, tokens)

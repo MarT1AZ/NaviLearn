@@ -188,14 +188,13 @@ the main content would be summarized info and content bullet points for you
                            tool_name = 'video_info_processor_agent',
                            tool_description = 'retrieve video information with id, return with summarized, preprocessed info'
                        )],
-              handoffs = [video_info_processor_agent],
               output_type=ContentRecommendationList)
 
 
 
 
 
-async def run_recommendation(query: str) -> tuple[ContentRecommendationList, int]:
+async def run_recommendation(query: str,cacheDictContext) -> tuple[ContentRecommendationList, int]:
     """
     Run the orchestration agent for a given query.
     Returns (ContentRecommendationList, total_tokens_used).
@@ -213,7 +212,7 @@ async def run_recommendation(query: str) -> tuple[ContentRecommendationList, int
     )
     logging.info(f"[AGENT]: asking agent with query: {query}")
  
-    result = await Runner.run(orchestration_agent, query)
+    result = await Runner.run(orchestration_agent, query,context=cacheDictContext)
  
     total_tokens = sum(
         r.usage.total_tokens for r in result.raw_responses if r.usage
